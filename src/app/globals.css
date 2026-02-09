@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0b14;
-  --foreground: #e2e8f0;
-  --card: #111827;
-  --card-hover: #1a2234;
-  --surface: #0f1219;
-  --border: #1e293b;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-hover: #f1f5f9;
+  --surface: #f1f5f9;
+  --border: #e2e8f0;
   --muted: #64748b;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-subtle: rgba(59, 130, 246, 0.1);
-  --secondary: #10b981;
-  --secondary-subtle: rgba(16, 185, 129, 0.1);
-  --accent: #60a5fa;
-  --danger: #ef4444;
-  --danger-subtle: rgba(239, 68, 68, 0.1);
-  --warning: #f59e0b;
-  --warning-subtle: rgba(245, 158, 11, 0.1);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-subtle: rgba(37, 99, 235, 0.08);
+  --secondary: #059669;
+  --secondary-subtle: rgba(5, 150, 105, 0.08);
+  --accent: #3b82f6;
+  --danger: #dc2626;
+  --danger-subtle: rgba(220, 38, 38, 0.08);
+  --warning: #d97706;
+  --warning-subtle: rgba(217, 119, 6, 0.08);
 }
 
 @theme inline {
@@ -64,8 +64,8 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--primary);
   cursor: pointer;
-  border: 2px solid var(--background);
-  box-shadow: 0 0 0 3px var(--primary-subtle);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 0 3px var(--primary-subtle);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -74,8 +74,8 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   background: var(--primary);
   cursor: pointer;
-  border: 2px solid var(--background);
-  box-shadow: 0 0 0 3px var(--primary-subtle);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 0 3px var(--primary-subtle);
 }
 
 @media print {

@@ -114,7 +114,7 @@ export function SummaryPanel({ stages, assumptions, onSave, onExportPDF }: Props
               <BarChart data={barData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                 <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} width={30} />
-                <Tooltip contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }} />
+                <Tooltip contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
                 <Bar dataKey="hours" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -133,7 +133,7 @@ export function SummaryPanel({ stages, assumptions, onSave, onExportPDF }: Props
                     <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }} formatter={(v) => typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v)} />
+                <Tooltip contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} formatter={(v) => typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v)} />
               </PieChart>
             </ResponsiveContainer>
           </div>

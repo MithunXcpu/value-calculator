@@ -129,7 +129,7 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} width={35} />
                   <Tooltip
-                    contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }}
+                    contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                   />
                   <Bar dataKey="hours" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -151,7 +151,7 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }}
+                    contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                     formatter={(v) => (typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v))}
                   />
                 </PieChart>
@@ -175,11 +175,11 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={projectionData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="year" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} width={60} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
               <Tooltip
-                contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }}
+                contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                 formatter={(v) => (typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v))}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
@@ -202,7 +202,7 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
                 <XAxis dataKey="rate" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} width={50} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
                 <Tooltip
-                  contentStyle={{ background: "#111827", border: "1px solid #1e293b", borderRadius: 8, fontSize: 12, color: "#e2e8f0" }}
+                  contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                   formatter={(v) => (typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v))}
                 />
                 <Bar dataKey="npv" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
