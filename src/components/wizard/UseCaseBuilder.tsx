@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Sparkles, Loader2, Trash2, ChevronDown, ChevronUp, Wand2 } from "lucide-react";
-import { Stage, Assumptions, ProductAnalysis, RoleAllocation } from "@/lib/types";
+import { Plus, Sparkles, Loader2, Trash2, ChevronDown, ChevronUp, Wand2, ShieldAlert, Code2, Scale, Smile, Star, MoreHorizontal } from "lucide-react";
+import { Stage, Assumptions, ProductAnalysis, RoleAllocation, SoftBenefit, SoftBenefitType, SOFT_BENEFIT_LABELS } from "@/lib/types";
 import { getRoleById } from "@/lib/calculator";
 
 interface Props {
@@ -84,6 +84,44 @@ export function UseCaseBuilder({
       a.roleId === roleId ? { ...a, [field]: value } : a
     );
     onUpdateStage(stageIdx, { ...stage, roleAllocations: allocations });
+  };
+
+  const addSoftBenefit = (stageIdx: number) => {
+    const stage = stages[stageIdx];
+    const newBenefit: SoftBenefit = {
+      id: crypto.randomUUID(),
+      type: "risk_exposure",
+      label: "",
+      description: "",
+      impactPct: 20,
+      rationale: "",
+    };
+    onUpdateStage(stageIdx, { ...stage, softBenefits: [...(stage.softBenefits || []), newBenefit] });
+  };
+
+  const updateSoftBenefit = (stageIdx: number, benefitId: string, updates: Partial<SoftBenefit>) => {
+    const stage = stages[stageIdx];
+    const benefits = (stage.softBenefits || []).map((sb) =>
+      sb.id === benefitId ? { ...sb, ...updates } : sb
+    );
+    onUpdateStage(stageIdx, { ...stage, softBenefits: benefits });
+  };
+
+  const removeSoftBenefit = (stageIdx: number, benefitId: string) => {
+    const stage = stages[stageIdx];
+    const benefits = (stage.softBenefits || []).filter((sb) => sb.id !== benefitId);
+    onUpdateStage(stageIdx, { ...stage, softBenefits: benefits });
+  };
+
+  const softBenefitIcon = (type: SoftBenefitType) => {
+    switch (type) {
+      case "risk_exposure": return ShieldAlert;
+      case "tech_debt": return Code2;
+      case "compliance": return Scale;
+      case "employee_satisfaction": return Smile;
+      case "brand_reputation": return Star;
+      default: return MoreHorizontal;
+    }
   };
 
   return (
@@ -267,6 +305,87 @@ export function UseCaseBuilder({
                   rows={3}
                   className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none"
                 />
+              </div>
+
+              {/* Soft Benefits */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs text-muted font-medium uppercase tracking-wider">Soft Benefits</label>
+                  <button
+                    onClick={() => addSoftBenefit(idx)}
+                    className="flex items-center gap-1 text-xs text-primary hover:text-primary-hover transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Add Benefit
+                  </button>
+                </div>
+                {(stage.softBenefits || []).length === 0 && (
+                  <p className="text-xs text-muted italic">No soft benefits defined. Add risk exposure, tech debt reduction, compliance impact, etc.</p>
+                )}
+                <div className="space-y-2">
+                  {(stage.softBenefits || []).map((sb) => {
+                    const SbIcon = softBenefitIcon(sb.type);
+                    return (
+                      <div key={sb.id} className="bg-background border border-border rounded-lg p-3 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <SbIcon className="w-3.5 h-3.5 text-warning flex-shrink-0" />
+                          <select
+                            value={sb.type}
+                            onChange={(e) => updateSoftBenefit(idx, sb.id, { type: e.target.value as SoftBenefitType })}
+                            className="bg-card border border-border rounded-md px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary flex-1"
+                          >
+                            {Object.entries(SOFT_BENEFIT_LABELS).map(([key, label]) => (
+                              <option key={key} value={key}>{label}</option>
+                            ))}
+                          </select>
+                          <button
+                            onClick={() => removeSoftBenefit(idx, sb.id)}
+                            className="p-1 hover:bg-danger/10 rounded text-muted hover:text-danger transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={sb.label}
+                            onChange={(e) => updateSoftBenefit(idx, sb.id, { label: e.target.value })}
+                            placeholder="Benefit label"
+                            className="bg-card border border-border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                          />
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="range"
+                              min={0}
+                              max={100}
+                              step={5}
+                              value={sb.impactPct}
+                              onChange={(e) => updateSoftBenefit(idx, sb.id, { impactPct: Number(e.target.value) })}
+                              className="flex-1 h-1.5 bg-border rounded-full appearance-none cursor-pointer
+                                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5
+                                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-warning [&::-webkit-slider-thumb]:cursor-pointer"
+                            />
+                            <span className="text-xs font-mono text-warning font-semibold w-8 text-right">{sb.impactPct}%</span>
+                          </div>
+                        </div>
+                        <textarea
+                          value={sb.description}
+                          onChange={(e) => updateSoftBenefit(idx, sb.id, { description: e.target.value })}
+                          placeholder="Describe the soft benefit impact..."
+                          rows={1}
+                          className="w-full bg-card border border-border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                        />
+                        <textarea
+                          value={sb.rationale}
+                          onChange={(e) => updateSoftBenefit(idx, sb.id, { rationale: e.target.value })}
+                          placeholder="Data-driven rationale for this benefit..."
+                          rows={1}
+                          className="w-full bg-card border border-border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )}

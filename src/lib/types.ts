@@ -20,6 +20,26 @@ export interface Assumptions {
   currency: Currency;
 }
 
+export type SoftBenefitType = "risk_exposure" | "tech_debt" | "compliance" | "employee_satisfaction" | "brand_reputation" | "other";
+
+export interface SoftBenefit {
+  id: string;
+  type: SoftBenefitType;
+  label: string;
+  description: string;
+  impactPct: number; // 0-100 percentage effect
+  rationale: string;
+}
+
+export const SOFT_BENEFIT_LABELS: Record<SoftBenefitType, string> = {
+  risk_exposure: "Risk Exposure Reduction",
+  tech_debt: "Tech Debt Reduction",
+  compliance: "Compliance Impact",
+  employee_satisfaction: "Employee Satisfaction",
+  brand_reputation: "Brand & Reputation",
+  other: "Other Benefit",
+};
+
 export interface Stage {
   id: string;
   name: string;
@@ -28,6 +48,7 @@ export interface Stage {
   rationale: string;
   peopleAffected: number;
   workflow: string;
+  softBenefits?: SoftBenefit[];
 }
 
 export interface RoleResult {

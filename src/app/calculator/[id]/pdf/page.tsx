@@ -7,7 +7,7 @@ import { getCalculator } from "@/lib/storage";
 import { calculateSummary, calculateStage, formatCurrency, getRoleById } from "@/lib/calculator";
 import { calculateAdvancedMetrics, formatIRR } from "@/lib/advanced-calculator";
 import Link from "next/link";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft, Printer, ShieldAlert, Code2, Scale, Smile, Star, Target } from "lucide-react";
 
 export default function PDFPreviewPage() {
   const params = useParams();
@@ -297,6 +297,16 @@ export default function PDFPreviewPage() {
                             );
                           })}
                         </div>
+                        {stage.softBenefits && stage.softBenefits.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {stage.softBenefits.map((sb) => (
+                              <span key={sb.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 rounded text-xs font-medium">
+                                <SoftBenefitPdfIcon type={sb.type} />
+                                {sb.label} ({sb.impactPct}%)
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         {stage.assumptions && (
                           <p className="text-xs text-gray-400 mt-1 italic">Assumption: {stage.assumptions}</p>
                         )}
@@ -394,6 +404,32 @@ export default function PDFPreviewPage() {
                   Net Return: <span className="font-bold text-emerald-700">{formatCurrency(fiveYearTotal - advanced.tco, calc.assumptions.currency)}</span>
                 </p>
               </div>
+
+              {/* Soft Benefits Summary */}
+              {(() => {
+                const allBenefits = calc.stages.flatMap((s) =>
+                  (s.softBenefits || []).map((sb) => ({ ...sb, stage: s.name }))
+                );
+                if (allBenefits.length === 0) return null;
+                return (
+                  <div className="mt-6">
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Strategic Benefits (Non-Financial)</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {allBenefits.map((sb, i) => (
+                        <div key={i} className="bg-amber-50 border border-amber-100 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <SoftBenefitPdfIcon type={sb.type} />
+                            <span className="text-xs font-semibold text-gray-900">{sb.label}</span>
+                            <span className="ml-auto text-xs font-bold text-amber-700">{sb.impactPct}%</span>
+                          </div>
+                          {sb.description && <p className="text-xs text-gray-500 leading-relaxed">{sb.description}</p>}
+                          <p className="text-xs text-gray-400 mt-0.5 italic">{sb.stage}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -505,6 +541,18 @@ function MetricHero({ label, value, description, color }: { label: string; value
       <p className="text-xs text-gray-400">{description}</p>
     </div>
   );
+}
+
+function SoftBenefitPdfIcon({ type }: { type: string }) {
+  const cls = "w-3 h-3";
+  switch (type) {
+    case "risk_exposure": return <ShieldAlert className={cls} />;
+    case "tech_debt": return <Code2 className={cls} />;
+    case "compliance": return <Scale className={cls} />;
+    case "employee_satisfaction": return <Smile className={cls} />;
+    case "brand_reputation": return <Star className={cls} />;
+    default: return <Target className={cls} />;
+  }
 }
 
 function ProjectionBox({ label, value, sub, highlight }: { label: string; value: string; sub: string; highlight?: boolean }) {

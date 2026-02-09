@@ -70,10 +70,41 @@ export default function DashboardPage() {
 
         <section>
           <h2 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">Start from a Template</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {templates.map((t, i) => (
-              <TemplateCard key={t.name} name={t.name} description={t.description} onSelect={() => handleTemplate(i)} />
-            ))}
+
+          {/* AI-Powered Templates */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">AI-Powered</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {templates.slice(0, 4).map((t, i) => (
+                <TemplateCard key={t.name} name={t.name} description={t.description} category={t.category} onSelect={() => handleTemplate(i)} />
+              ))}
+            </div>
+          </div>
+
+          {/* Industry Templates */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-primary bg-blue-50 px-2 py-0.5 rounded-full">Industry</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {templates.slice(4, 10).map((t, i) => (
+                <TemplateCard key={t.name} name={t.name} description={t.description} category={t.category} onSelect={() => handleTemplate(i + 4)} />
+              ))}
+            </div>
+          </div>
+
+          {/* General Templates */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-muted bg-surface px-2 py-0.5 rounded-full">General</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {templates.slice(10).map((t, i) => (
+                <TemplateCard key={t.name} name={t.name} description={t.description} category={t.category} onSelect={() => handleTemplate(i + 10)} />
+              ))}
+            </div>
           </div>
         </section>
       </motion.div>

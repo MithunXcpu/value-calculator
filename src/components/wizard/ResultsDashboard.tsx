@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { TrendingUp, Clock, AlertTriangle, Users, DollarSign, Target, Calculator, BarChart3 } from "lucide-react";
-import { Stage, Assumptions } from "@/lib/types";
+import { TrendingUp, Clock, AlertTriangle, Users, DollarSign, Target, Calculator, BarChart3, ShieldAlert, Code2, Scale, Smile, Star } from "lucide-react";
+import { Stage, Assumptions, SoftBenefit, SOFT_BENEFIT_LABELS } from "@/lib/types";
 import { calculateSummary, calculateStage, formatCurrency, getRoleById } from "@/lib/calculator";
 import { calculateAdvancedMetrics, formatIRR, sensitivityAnalysis } from "@/lib/advanced-calculator";
 import { MetricCard } from "./MetricCard";
@@ -69,6 +69,22 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
     rate: `${(s.rate * 100).toFixed(0)}%`,
     npv: Math.round(s.npv),
   }));
+
+  // Soft benefits aggregated across all stages
+  const softBenefitsData = stages.flatMap((s) =>
+    (s.softBenefits || []).map((sb) => ({ ...sb, stage: s.name }))
+  );
+
+  function softBenefitIcon(type: string) {
+    switch (type) {
+      case "risk_exposure": return ShieldAlert;
+      case "tech_debt": return Code2;
+      case "compliance": return Scale;
+      case "employee_satisfaction": return Smile;
+      case "brand_reputation": return Star;
+      default: return Target;
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -222,6 +238,37 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
           </div>
         ))}
       </div>
+
+      {/* Soft Benefits Summary */}
+      {softBenefitsData.length > 0 && (
+        <div className="bg-card border border-border rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <ShieldAlert className="w-4 h-4 text-muted" />
+            <p className="text-xs font-medium text-muted uppercase tracking-wider">Strategic Benefits</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {softBenefitsData.map((sb, i) => {
+              const Icon = softBenefitIcon(sb.type);
+              return (
+                <div key={i} className="bg-surface rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Icon className="w-3.5 h-3.5 text-warning" />
+                    <span className="text-xs font-medium">{sb.label}</span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
+                      <div className="h-full bg-warning rounded-full" style={{ width: `${sb.impactPct}%` }} />
+                    </div>
+                    <span className="text-xs font-bold text-warning">{sb.impactPct}%</span>
+                  </div>
+                  {sb.description && <p className="text-xs text-muted mt-1 line-clamp-2">{sb.description}</p>}
+                  <p className="text-xs text-muted/60 mt-0.5">{sb.stage}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
