@@ -74,7 +74,7 @@ export default function DashboardPage() {
           {/* AI-Powered Templates */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-medium text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">AI-Powered</span>
+              <span className="text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full">AI-Powered</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {templates.slice(0, 4).map((t, i) => (
@@ -86,7 +86,7 @@ export default function DashboardPage() {
           {/* Industry Templates */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-medium text-primary bg-blue-50 px-2 py-0.5 rounded-full">Industry</span>
+              <span className="text-xs font-medium text-primary bg-primary-subtle px-2 py-0.5 rounded-full">Industry</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {templates.slice(4, 10).map((t, i) => (
