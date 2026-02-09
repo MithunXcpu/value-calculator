@@ -1,88 +1,136 @@
-import { Assumptions, Calculator, Stage } from "./types";
+import { Assumptions, Calculator, Role, Stage } from "./types";
 
-const defaultAssumptions: Assumptions = {
-  roleALabel: "General Counsel",
-  roleBLabel: "FTE",
-  rateA: 200,
-  rateB: 100,
-  hoursPerWeek: 40,
-  loadedMultiplier: 1.3,
-  annualToolCost: 50000,
-  currency: "USD",
-};
-
-function makeStage(name: string, bA: number, bB: number, gA: number, gB: number, assumptions: string, rationale: string, people: number, workflow = ""): Stage {
-  return { id: crypto.randomUUID(), name, baselineA: bA, baselineB: bB, gainA: gA, gainB: gB, assumptions, rationale, peopleAffected: people, workflow };
+function makeRole(label: string, rate: number): Role {
+  return { id: crypto.randomUUID(), label, hourlyRate: rate };
 }
 
-const riskManagementStages: Stage[] = [
-  makeStage("Identify Existing Risks", 15, 20, 60, 50, "Current process involves manual spreadsheet reviews", "AI-powered risk scanning reduces manual identification time", 5, "Manual review of risk registers and documentation"),
-  makeStage("Workshops to Identify New Risks", 10, 15, 40, 30, "Quarterly workshops with 8-10 stakeholders", "Pre-populated risk libraries accelerate workshop prep", 10, "Schedule, prepare, facilitate, and document workshops"),
-  makeStage("Create/Maintain Risk Register", 20, 25, 70, 60, "Register maintained in Excel with manual updates", "Centralized platform with automated workflows", 3, "Manual data entry and cross-referencing across spreadsheets"),
-  makeStage("Educate Risk Owners", 8, 12, 50, 40, "Training sessions scheduled ad hoc", "Self-service training modules and automated reminders", 15, "Create training materials and schedule sessions"),
-  makeStage("Risk Assessment & Review", 15, 20, 65, 55, "Annual assessment cycle with manual scoring", "Continuous monitoring with real-time dashboards", 8, "Collect data, score risks, compile reports"),
-  makeStage("Verify Risks (Monitor)", 12, 18, 70, 65, "Monthly manual verification checks", "Automated monitoring with exception-based alerts", 4, "Manual checks against risk indicators"),
-  makeStage("Reporting", 12, 15, 80, 70, "Manual Excel report creation for board presentations", "One-click automated report generation with visualizations", 6, "Gather data, create charts, format reports"),
-  makeStage("Ad Hoc Requests", 8, 6, 50, 40, "Unplanned requests disrupt regular workflow", "Self-service access reduces ad hoc burden", 5, "Respond to urgent requests from leadership"),
-];
+function makeStage(
+  name: string,
+  roleIds: string[],
+  allocations: { baseline: number; gain: number }[],
+  assumptions: string,
+  rationale: string,
+  people: number,
+  workflow = ""
+): Stage {
+  return {
+    id: crypto.randomUUID(),
+    name,
+    roleAllocations: allocations.map((a, i) => ({ roleId: roleIds[i], baseline: a.baseline, gain: a.gain })),
+    assumptions,
+    rationale,
+    peopleAffected: people,
+    workflow,
+  };
+}
 
-const softwareROIStages: Stage[] = [
-  makeStage("Software Evaluation", 10, 15, 50, 40, "Manual vendor comparison across multiple criteria", "Structured evaluation framework with scoring templates", 4, "Research vendors, schedule demos, compare features"),
-  makeStage("Implementation & Setup", 20, 30, 60, 55, "Custom configuration and data migration required", "Pre-built templates and automated migration tools", 6, "Configure system, migrate data, set up integrations"),
-  makeStage("User Training", 8, 20, 45, 50, "In-person training sessions with manual materials", "Interactive self-paced learning modules", 20, "Create training content, schedule sessions, track completion"),
-  makeStage("Ongoing Support", 5, 15, 55, 60, "Manual ticket handling and troubleshooting", "AI-assisted support with knowledge base", 3, "Handle support tickets and escalations"),
-  makeStage("Optimization & Reporting", 10, 12, 65, 50, "Manual data collection for usage reports", "Automated analytics dashboards", 4, "Collect metrics, analyze adoption, recommend improvements"),
-];
+function buildTemplate(
+  name: string,
+  description: string,
+  roles: Role[],
+  stageData: { name: string; allocs: { baseline: number; gain: number }[]; assumptions: string; rationale: string; people: number; workflow?: string }[],
+  overrides: Partial<Assumptions> = {}
+) {
+  const roleIds = roles.map((r) => r.id);
+  const assumptions: Assumptions = { roles, hoursPerWeek: 40, loadedMultiplier: 1.3, annualToolCost: 50000, currency: "USD", ...overrides };
+  const stages = stageData.map((s) => makeStage(s.name, roleIds, s.allocs, s.assumptions, s.rationale, s.people, s.workflow));
+  return { name, description, stages, assumptions };
+}
 
-const processAutomationStages: Stage[] = [
-  makeStage("Process Mapping", 12, 18, 45, 40, "Manual documentation of current workflows", "Digital process mining and automated mapping", 5, "Interview stakeholders, document steps, identify bottlenecks"),
-  makeStage("Automation Development", 15, 25, 55, 50, "Custom scripting and manual integration work", "Low-code automation builders with pre-built connectors", 4, "Design automation rules, build workflows, configure triggers"),
-  makeStage("Testing & Validation", 8, 15, 50, 45, "Manual test cases and validation checks", "Automated testing frameworks with regression suites", 6, "Create test scenarios, execute tests, validate outputs"),
-  makeStage("Deployment & Rollout", 5, 12, 40, 35, "Manual deployment with change management", "Automated deployment pipelines with rollback capability", 10, "Deploy changes, communicate updates, monitor adoption"),
-  makeStage("Monitoring & Maintenance", 10, 15, 65, 60, "Manual monitoring and periodic reviews", "Real-time monitoring dashboards with automated alerts", 3, "Track performance, identify issues, apply fixes"),
-  makeStage("Continuous Improvement", 8, 10, 50, 45, "Ad hoc improvement suggestions", "Data-driven optimization recommendations", 5, "Analyze metrics, propose improvements, implement changes"),
-];
+const gcRole = makeRole("General Counsel", 200);
+const raRole = makeRole("Risk Analyst", 100);
 
-export const templates: { name: string; description: string; stages: Stage[]; assumptions: Assumptions }[] = [
-  {
-    name: "Risk Management",
-    description: "Model ROI for risk management software based on GRC workflow stages. Includes 8 stages from risk identification to ad hoc requests.",
-    stages: riskManagementStages,
-    assumptions: { ...defaultAssumptions, roleALabel: "General Counsel", roleBLabel: "Risk Analyst" },
-  },
-  {
-    name: "Software ROI",
-    description: "Justify a software purchase by modeling efficiency gains across evaluation, implementation, training, support, and optimization.",
-    stages: softwareROIStages,
-    assumptions: { ...defaultAssumptions, roleALabel: "Project Lead", roleBLabel: "Team Member", rateA: 150, rateB: 85 },
-  },
-  {
-    name: "Process Automation",
-    description: "Calculate savings from automating manual workflows. Covers process mapping through continuous improvement.",
-    stages: processAutomationStages,
-    assumptions: { ...defaultAssumptions, roleALabel: "Process Engineer", roleBLabel: "Operations Staff", rateA: 130, rateB: 75 },
-  },
-];
+const riskManagement = buildTemplate("Risk Management", "Model ROI for risk management software based on GRC workflow stages.", [gcRole, raRole], [
+  { name: "Identify Existing Risks", allocs: [{ baseline: 15, gain: 60 }, { baseline: 20, gain: 50 }], assumptions: "Current process involves manual spreadsheet reviews", rationale: "AI-powered risk scanning reduces manual identification time", people: 5, workflow: "Manual review of risk registers and documentation" },
+  { name: "Workshops to Identify New Risks", allocs: [{ baseline: 10, gain: 40 }, { baseline: 15, gain: 30 }], assumptions: "Quarterly workshops with 8-10 stakeholders", rationale: "Pre-populated risk libraries accelerate workshop prep", people: 10, workflow: "Schedule, prepare, facilitate, and document workshops" },
+  { name: "Create/Maintain Risk Register", allocs: [{ baseline: 20, gain: 70 }, { baseline: 25, gain: 60 }], assumptions: "Register maintained in Excel with manual updates", rationale: "Centralized platform with automated workflows", people: 3, workflow: "Manual data entry and cross-referencing" },
+  { name: "Educate Risk Owners", allocs: [{ baseline: 8, gain: 50 }, { baseline: 12, gain: 40 }], assumptions: "Training sessions scheduled ad hoc", rationale: "Self-service training modules and automated reminders", people: 15, workflow: "Create training materials and schedule sessions" },
+  { name: "Risk Assessment & Review", allocs: [{ baseline: 15, gain: 65 }, { baseline: 20, gain: 55 }], assumptions: "Annual assessment cycle with manual scoring", rationale: "Continuous monitoring with real-time dashboards", people: 8, workflow: "Collect data, score risks, compile reports" },
+  { name: "Verify Risks (Monitor)", allocs: [{ baseline: 12, gain: 70 }, { baseline: 18, gain: 65 }], assumptions: "Monthly manual verification checks", rationale: "Automated monitoring with exception-based alerts", people: 4, workflow: "Manual checks against risk indicators" },
+  { name: "Reporting", allocs: [{ baseline: 12, gain: 80 }, { baseline: 15, gain: 70 }], assumptions: "Manual Excel report creation for board presentations", rationale: "One-click automated report generation", people: 6, workflow: "Gather data, create charts, format reports" },
+  { name: "Ad Hoc Requests", allocs: [{ baseline: 8, gain: 50 }, { baseline: 6, gain: 40 }], assumptions: "Unplanned requests disrupt regular workflow", rationale: "Self-service access reduces ad hoc burden", people: 5, workflow: "Respond to urgent requests from leadership" },
+]);
+
+const plRole = makeRole("Project Lead", 150);
+const tmRole = makeRole("Team Member", 85);
+
+const softwareROI = buildTemplate("Software ROI", "Justify a software purchase by modeling efficiency gains across evaluation, implementation, training, support, and optimization.", [plRole, tmRole], [
+  { name: "Software Evaluation", allocs: [{ baseline: 10, gain: 50 }, { baseline: 15, gain: 40 }], assumptions: "Manual vendor comparison across multiple criteria", rationale: "Structured evaluation framework with scoring templates", people: 4, workflow: "Research vendors, schedule demos, compare features" },
+  { name: "Implementation & Setup", allocs: [{ baseline: 20, gain: 60 }, { baseline: 30, gain: 55 }], assumptions: "Custom configuration and data migration required", rationale: "Pre-built templates and automated migration tools", people: 6, workflow: "Configure system, migrate data, set up integrations" },
+  { name: "User Training", allocs: [{ baseline: 8, gain: 45 }, { baseline: 20, gain: 50 }], assumptions: "In-person training sessions with manual materials", rationale: "Interactive self-paced learning modules", people: 20, workflow: "Create training content, schedule sessions, track completion" },
+  { name: "Ongoing Support", allocs: [{ baseline: 5, gain: 55 }, { baseline: 15, gain: 60 }], assumptions: "Manual ticket handling and troubleshooting", rationale: "AI-assisted support with knowledge base", people: 3, workflow: "Handle support tickets and escalations" },
+  { name: "Optimization & Reporting", allocs: [{ baseline: 10, gain: 65 }, { baseline: 12, gain: 50 }], assumptions: "Manual data collection for usage reports", rationale: "Automated analytics dashboards", people: 4, workflow: "Collect metrics, analyze adoption, recommend improvements" },
+]);
+
+const peRole = makeRole("Process Engineer", 130);
+const osRole = makeRole("Operations Staff", 75);
+
+const processAutomation = buildTemplate("Process Automation", "Calculate savings from automating manual workflows. Covers process mapping through continuous improvement.", [peRole, osRole], [
+  { name: "Process Mapping", allocs: [{ baseline: 12, gain: 45 }, { baseline: 18, gain: 40 }], assumptions: "Manual documentation of current workflows", rationale: "Digital process mining and automated mapping", people: 5, workflow: "Interview stakeholders, document steps, identify bottlenecks" },
+  { name: "Automation Development", allocs: [{ baseline: 15, gain: 55 }, { baseline: 25, gain: 50 }], assumptions: "Custom scripting and manual integration work", rationale: "Low-code automation builders with pre-built connectors", people: 4, workflow: "Design automation rules, build workflows, configure triggers" },
+  { name: "Testing & Validation", allocs: [{ baseline: 8, gain: 50 }, { baseline: 15, gain: 45 }], assumptions: "Manual test cases and validation checks", rationale: "Automated testing frameworks with regression suites", people: 6, workflow: "Create test scenarios, execute tests, validate outputs" },
+  { name: "Deployment & Rollout", allocs: [{ baseline: 5, gain: 40 }, { baseline: 12, gain: 35 }], assumptions: "Manual deployment with change management", rationale: "Automated deployment pipelines with rollback capability", people: 10, workflow: "Deploy changes, communicate updates, monitor adoption" },
+  { name: "Monitoring & Maintenance", allocs: [{ baseline: 10, gain: 65 }, { baseline: 15, gain: 60 }], assumptions: "Manual monitoring and periodic reviews", rationale: "Real-time monitoring dashboards with automated alerts", people: 3, workflow: "Track performance, identify issues, apply fixes" },
+  { name: "Continuous Improvement", allocs: [{ baseline: 8, gain: 50 }, { baseline: 10, gain: 45 }], assumptions: "Ad hoc improvement suggestions", rationale: "Data-driven optimization recommendations", people: 5, workflow: "Analyze metrics, propose improvements, implement changes" },
+]);
+
+export const templates = [riskManagement, softwareROI, processAutomation];
 
 export function createCalculatorFromTemplate(templateIdx: number): Calculator {
   const t = templates[templateIdx];
+  const roles = t.assumptions.roles.map((r) => ({ ...r, id: crypto.randomUUID() }));
+  const roleIdMap = new Map(t.assumptions.roles.map((old, i) => [old.id, roles[i].id]));
+
   return {
     id: crypto.randomUUID(),
     name: `${t.name} Calculator`,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    assumptions: { ...t.assumptions },
-    stages: t.stages.map((s) => ({ ...s, id: crypto.randomUUID() })),
+    schemaVersion: 3,
+    assumptions: { ...t.assumptions, roles },
+    stages: t.stages.map((s) => ({
+      ...s,
+      id: crypto.randomUUID(),
+      roleAllocations: s.roleAllocations.map((a) => ({ ...a, roleId: roleIdMap.get(a.roleId) || a.roleId })),
+    })),
   };
 }
 
 export function createBlankCalculator(): Calculator {
+  const roleA = makeRole("Senior Staff", 150);
+  const roleB = makeRole("Junior Staff", 75);
+
   return {
     id: crypto.randomUUID(),
     name: "New Calculator",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    assumptions: { ...defaultAssumptions },
-    stages: [makeStage("Stage 1", 10, 15, 30, 25, "", "", 3)],
+    schemaVersion: 3,
+    assumptions: { roles: [roleA, roleB], hoursPerWeek: 40, loadedMultiplier: 1.3, annualToolCost: 50000, currency: "USD" },
+    stages: [{
+      id: crypto.randomUUID(),
+      name: "Stage 1",
+      roleAllocations: [{ roleId: roleA.id, baseline: 10, gain: 30 }, { roleId: roleB.id, baseline: 15, gain: 25 }],
+      assumptions: "",
+      rationale: "",
+      peopleAffected: 3,
+      workflow: "",
+    }],
+  };
+}
+
+export function createWizardCalculator(): Calculator {
+  const roleA = makeRole("Senior Staff", 150);
+  const roleB = makeRole("Junior Staff", 75);
+
+  return {
+    id: crypto.randomUUID(),
+    name: "New Calculator",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    schemaVersion: 3,
+    assumptions: { roles: [roleA, roleB], hoursPerWeek: 40, loadedMultiplier: 1.3, annualToolCost: 50000, currency: "USD" },
+    stages: [],
+    wizardState: { currentStep: 1, isComplete: false },
   };
 }

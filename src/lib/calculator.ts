@@ -1,21 +1,36 @@
-import { Assumptions, Currency, Stage, StageCalculation, Summary } from "./types";
+import { Assumptions, Currency, Role, Stage, StageCalculation, Summary } from "./types";
+
+export function getRoleById(roles: Role[], roleId: string): Role | undefined {
+  return roles.find((r) => r.id === roleId);
+}
 
 export function calculateStage(stage: Stage, assumptions: Assumptions): StageCalculation {
-  const afterA = stage.baselineA * (1 - stage.gainA / 100);
-  const afterB = stage.baselineB * (1 - stage.gainB / 100);
-  const savedA = stage.baselineA - afterA;
-  const savedB = stage.baselineB - afterB;
-  const totalSaved = savedA + savedB;
-  const costSaved = (savedA * assumptions.rateA + savedB * assumptions.rateB) * assumptions.loadedMultiplier;
+  const roleResults = stage.roleAllocations.map((alloc) => {
+    const role = getRoleById(assumptions.roles, alloc.roleId);
+    const rate = role?.hourlyRate ?? 0;
+    const after = alloc.baseline * (1 - alloc.gain / 100);
+    const saved = alloc.baseline - after;
+    const costSaved = saved * rate * assumptions.loadedMultiplier;
+    return { roleId: alloc.roleId, baseline: alloc.baseline, after, saved, costSaved };
+  });
 
-  return { afterA, afterB, savedA, savedB, totalSaved, costSaved };
+  const totalSaved = roleResults.reduce((sum, r) => sum + r.saved, 0);
+  const costSaved = roleResults.reduce((sum, r) => sum + r.costSaved, 0);
+
+  return { roleResults, totalSaved, costSaved };
 }
 
 export function calculateSummary(stages: Stage[], assumptions: Assumptions): Summary {
   const calculations = stages.map((s) => calculateStage(s, assumptions));
 
-  const totalBaseline = stages.reduce((sum, s) => sum + s.baselineA + s.baselineB, 0);
-  const totalAfter = calculations.reduce((sum, c) => sum + c.afterA + c.afterB, 0);
+  const totalBaseline = stages.reduce(
+    (sum, s) => sum + s.roleAllocations.reduce((rs, a) => rs + a.baseline, 0),
+    0
+  );
+  const totalAfter = calculations.reduce(
+    (sum, c) => sum + c.roleResults.reduce((rs, r) => rs + r.after, 0),
+    0
+  );
   const totalSavedHours = calculations.reduce((sum, c) => sum + c.totalSaved, 0);
   const totalCostSaved = calculations.reduce((sum, c) => sum + c.costSaved, 0);
 
@@ -31,7 +46,7 @@ export function calculateSummary(stages: Stage[], assumptions: Assumptions): Sum
 }
 
 export function formatCurrency(value: number, currency: Currency = "USD"): string {
-  const symbols: Record<string, string> = { USD: "$", GBP: "£", EUR: "€" };
+  const symbols: Record<string, string> = { USD: "$", GBP: "\u00a3", EUR: "\u20ac" };
   const sym = symbols[currency] || "$";
   return `${sym}${Math.round(value).toLocaleString()}`;
 }
@@ -39,4 +54,3 @@ export function formatCurrency(value: number, currency: Currency = "USD"): strin
 export function formatNumber(value: number, decimals = 1): string {
   return value.toFixed(decimals);
 }
-

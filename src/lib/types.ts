@@ -1,10 +1,19 @@
 export type Currency = "USD" | "GBP" | "EUR";
 
+export interface Role {
+  id: string;
+  label: string;
+  hourlyRate: number;
+}
+
+export interface RoleAllocation {
+  roleId: string;
+  baseline: number;
+  gain: number;
+}
+
 export interface Assumptions {
-  roleALabel: string;
-  roleBLabel: string;
-  rateA: number;
-  rateB: number;
+  roles: Role[];
   hoursPerWeek: number;
   loadedMultiplier: number;
   annualToolCost: number;
@@ -14,21 +23,23 @@ export interface Assumptions {
 export interface Stage {
   id: string;
   name: string;
-  baselineA: number;
-  baselineB: number;
-  gainA: number;
-  gainB: number;
+  roleAllocations: RoleAllocation[];
   assumptions: string;
   rationale: string;
   peopleAffected: number;
   workflow: string;
 }
 
+export interface RoleResult {
+  roleId: string;
+  baseline: number;
+  after: number;
+  saved: number;
+  costSaved: number;
+}
+
 export interface StageCalculation {
-  afterA: number;
-  afterB: number;
-  savedA: number;
-  savedB: number;
+  roleResults: RoleResult[];
   totalSaved: number;
   costSaved: number;
 }
@@ -46,6 +57,36 @@ export interface Summary {
   year3: number;
 }
 
+export interface ClientCompany {
+  name: string;
+  ticker?: string;
+  logoUrl?: string;
+}
+
+export interface ProductAnalysis {
+  name: string;
+  description: string;
+  features: string[];
+  targetUsers: string[];
+  painPoints: string[];
+  sourceUrl?: string;
+  analyzedAt: string;
+}
+
+export interface WizardState {
+  currentStep: number;
+  isComplete: boolean;
+}
+
+export interface AdvancedMetrics {
+  npv: number;
+  irr: number;
+  tco: number;
+  breakEvenMonths: number;
+  year4: number;
+  year5: number;
+}
+
 export interface Calculator {
   id: string;
   name: string;
@@ -53,6 +94,11 @@ export interface Calculator {
   updatedAt: string;
   assumptions: Assumptions;
   stages: Stage[];
+  schemaVersion: number;
+  clientCompany?: ClientCompany;
+  nextSteps?: string[];
+  productAnalysis?: ProductAnalysis;
+  wizardState?: WizardState;
 }
 
 export interface WhiteLabelSettings {
@@ -60,4 +106,38 @@ export interface WhiteLabelSettings {
   logoBase64: string;
   primaryColor: string;
   accentColor: string;
+}
+
+// Legacy types for migration
+export interface LegacyAssumptions {
+  roleALabel: string;
+  roleBLabel: string;
+  rateA: number;
+  rateB: number;
+  hoursPerWeek: number;
+  loadedMultiplier: number;
+  annualToolCost: number;
+  currency: Currency;
+}
+
+export interface LegacyStage {
+  id: string;
+  name: string;
+  baselineA: number;
+  baselineB: number;
+  gainA: number;
+  gainB: number;
+  assumptions: string;
+  rationale: string;
+  peopleAffected: number;
+  workflow: string;
+}
+
+export interface LegacyCalculator {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  assumptions: LegacyAssumptions;
+  stages: LegacyStage[];
 }

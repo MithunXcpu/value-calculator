@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Calculator } from "@/lib/types";
 import { calculateSummary, formatCurrency } from "@/lib/calculator";
-import { Copy, Trash2, BarChart3 } from "lucide-react";
+import { Copy, Trash2, Building2 } from "lucide-react";
 
 interface Props {
   calc: Calculator;
@@ -18,11 +18,27 @@ export function CalculatorCard({ calc, onDuplicate, onDelete }: Props) {
   return (
     <div className="bg-card border border-border rounded-xl p-5 hover:border-primary/30 transition-colors group">
       <div className="flex items-start justify-between mb-3">
-        <Link href={`/calculator/${calc.id}`} className="flex-1">
-          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{calc.name}</h3>
-          <p className="text-xs text-muted mt-1">{calc.stages.length} stages · Updated {new Date(calc.updatedAt).toLocaleDateString()}</p>
+        <Link href={`/calculator/${calc.id}`} className="flex-1 min-w-0">
+          <div className="flex items-center gap-2.5 mb-1">
+            {calc.clientCompany?.logoUrl ? (
+              <img
+                src={calc.clientCompany.logoUrl}
+                alt=""
+                className="w-6 h-6 rounded object-contain bg-white p-0.5 flex-shrink-0"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+            ) : calc.clientCompany?.name ? (
+              <div className="w-6 h-6 rounded bg-primary-subtle flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-3 h-3 text-primary" />
+              </div>
+            ) : null}
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">{calc.name}</h3>
+          </div>
+          <p className="text-xs text-muted">
+            {calc.stages.length} stages · {calc.assumptions.roles.length} roles · Updated {new Date(calc.updatedAt).toLocaleDateString()}
+          </p>
         </Link>
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-shrink-0 ml-2">
           <button onClick={onDuplicate} className="p-1.5 hover:bg-card-hover rounded-lg text-muted hover:text-foreground transition-colors" title="Duplicate">
             <Copy className="w-3.5 h-3.5" />
           </button>

@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createBlankCalculator } from "@/lib/templates";
+import { createWizardCalculator } from "@/lib/templates";
 import { saveCalculator } from "@/lib/storage";
 
 export default function NewCalculatorPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const c = createBlankCalculator();
+    const c = createWizardCalculator();
     saveCalculator(c);
     router.replace(`/calculator/${c.id}`);
   }, [router]);
