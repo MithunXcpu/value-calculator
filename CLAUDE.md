@@ -14,9 +14,10 @@ An AI-powered ROI modeling tool with a 5-step wizard flow. Users enter a product
 - Lucide React for icons
 
 ## Theme
-- **Light theme** — white background (#f8fafc), blue primary (#2563eb)
+- **Dark stone theme** — stone background (#0c0a09), amber primary (#f59e0b), Sora font
 - Token system in `globals.css` via CSS custom properties
 - Chart tooltips use hardcoded light styles (white bg, slate text)
+- Contact form ("Get in Touch") on landing page via Formspree
 
 ## Key Architecture
 
@@ -90,8 +91,8 @@ npm run lint
 - localStorage stores calculator data unencrypted
 
 ## Conventions
-- Accent: blue (`--color-primary: #2563eb`)
-- Light theme throughout
+- Accent: amber (`--color-primary: #f59e0b`)
+- Dark stone theme throughout
 - Wizard flow for new calculators; editor mode for saved ones
 - AI features degrade gracefully — no API key = manual mode
 - Templates use `buildTemplate()` helper with role pairs and stage data

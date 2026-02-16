@@ -121,9 +121,9 @@ export function duplicateCalculator(id: string): Calculator | null {
 }
 
 export function getWhiteLabelSettings(): WhiteLabelSettings {
-  if (typeof window === "undefined") return { companyName: "", logoBase64: "", primaryColor: "#3b82f6", accentColor: "#10b981" };
+  if (typeof window === "undefined") return { companyName: "", logoBase64: "", primaryColor: "#f59e0b", accentColor: "#fbbf24" };
   const data = localStorage.getItem(SETTINGS_KEY);
-  return data ? JSON.parse(data) : { companyName: "", logoBase64: "", primaryColor: "#3b82f6", accentColor: "#10b981" };
+  return data ? JSON.parse(data) : { companyName: "", logoBase64: "", primaryColor: "#f59e0b", accentColor: "#fbbf24" };
 }
 
 export function saveWhiteLabelSettings(settings: WhiteLabelSettings): void {

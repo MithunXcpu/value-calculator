@@ -102,7 +102,7 @@ export default function LandingPage() {
           className="absolute inset-0 opacity-5"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)",
+              "linear-gradient(rgba(245, 158, 11, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.3) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         />
@@ -111,7 +111,7 @@ export default function LandingPage() {
           className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-96 opacity-20"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(59, 130, 246, 0.4) 0%, transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(245, 158, 11, 0.4) 0%, transparent 70%)",
           }}
         />
 
@@ -140,7 +140,7 @@ export default function LandingPage() {
               <br />
               <span
                 style={{
-                  background: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%)",
+                  background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -158,7 +158,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-center gap-4">
               <Link
                 href="/calculator/new"
-                className="group inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-7 py-3.5 rounded-xl font-medium transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30"
+                className="group inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-black px-7 py-3.5 rounded-xl font-medium transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30"
               >
                 Build a Calculator
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -234,7 +234,7 @@ export default function LandingPage() {
                 {/* Subtle gradient border glow on hover */}
                 <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, transparent 50%)",
+                    background: "linear-gradient(135deg, rgba(245, 158, 11, 0.03) 0%, transparent 50%)",
                   }}
                 />
                 <div className="relative">
@@ -336,13 +336,37 @@ export default function LandingPage() {
 
             <Link
               href="/calculator/new"
-              className="group inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-8 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30 text-lg"
+              className="group inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-black px-8 py-4 rounded-xl font-medium transition-all duration-200 shadow-lg shadow-primary/20 hover:shadow-primary/30 text-lg"
             >
               Start Building
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </motion.div>
+      </section>
+
+      {/* Get in Touch */}
+      <section className="max-w-7xl mx-auto px-6 py-16">
+        <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-white mb-2 text-center">Get in Touch</h2>
+          <p className="text-[var(--muted)] text-center mb-8">Have a question or want to work together?</p>
+          <form action="https://formspree.io/f/xnjbjvng" method="POST" className="space-y-4">
+            <input type="hidden" name="_subject" value="New message from Value Calculator" />
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+              <input type="text" name="name" id="name" required className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#f59e0b] transition-colors" placeholder="Your name" />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+              <input type="email" name="email" id="email" required className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#f59e0b] transition-colors" placeholder="you@example.com" />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+              <textarea name="message" id="message" required rows={4} className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--border)] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#f59e0b] transition-colors resize-none" placeholder="Your message..." />
+            </div>
+            <button type="submit" className="w-full px-6 py-3 bg-[#f59e0b] hover:bg-[#d97706] rounded-lg text-black font-semibold transition-colors">Send Message</button>
+          </form>
+        </div>
       </section>
 
       {/* Footer */}

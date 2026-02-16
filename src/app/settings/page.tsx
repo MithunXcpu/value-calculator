@@ -7,7 +7,7 @@ import { Palette, Save, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState<WhiteLabelSettings>({ companyName: "", logoBase64: "", primaryColor: "#3b82f6", accentColor: "#10b981" });
+  const [settings, setSettings] = useState<WhiteLabelSettings>({ companyName: "", logoBase64: "", primaryColor: "#f59e0b", accentColor: "#fbbf24" });
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {

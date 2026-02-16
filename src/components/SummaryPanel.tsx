@@ -14,7 +14,7 @@ interface Props {
   onExportPDF: () => void;
 }
 
-const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899"];
+const CHART_COLORS = ["#f59e0b", "#fbbf24", "#fcd34d", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899"];
 
 export function SummaryPanel({ stages, assumptions, onSave, onExportPDF }: Props) {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -115,7 +115,7 @@ export function SummaryPanel({ stages, assumptions, onSave, onExportPDF }: Props
                 <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
-                <Bar dataKey="hours" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="hours" fill="#f59e0b" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

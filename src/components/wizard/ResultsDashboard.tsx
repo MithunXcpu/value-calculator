@@ -23,7 +23,7 @@ import {
   Legend,
 } from "recharts";
 
-const CHART_COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899"];
+const CHART_COLORS = ["#f59e0b", "#fbbf24", "#fcd34d", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#ec4899"];
 
 interface Props {
   stages: Stage[];
@@ -147,7 +147,7 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
                   <Tooltip
                     contentStyle={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 12, color: "#0f172a", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
                   />
-                  <Bar dataKey="hours" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="hours" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -199,8 +199,8 @@ export function ResultsDashboard({ stages, assumptions }: Props) {
                 formatter={(v) => (typeof v === "number" ? formatCurrency(v, assumptions.currency) : String(v))}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Line type="monotone" dataKey="savings" stroke="#3b82f6" strokeWidth={2} dot={{ fill: "#3b82f6", r: 4 }} name="Annual Savings" />
-              <Line type="monotone" dataKey="cumulative" stroke="#10b981" strokeWidth={2} dot={{ fill: "#10b981", r: 4 }} name="Cumulative" />
+              <Line type="monotone" dataKey="savings" stroke="#f59e0b" strokeWidth={2} dot={{ fill: "#f59e0b", r: 4 }} name="Annual Savings" />
+              <Line type="monotone" dataKey="cumulative" stroke="#fbbf24" strokeWidth={2} dot={{ fill: "#fbbf24", r: 4 }} name="Cumulative" />
             </LineChart>
           </ResponsiveContainer>
         </div>
